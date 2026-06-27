@@ -176,6 +176,30 @@ Seventeen endpoints total. Full surface available in the live demo.
 
 ---
 
+## Design Notes
+
+A few alternative designs were considered during development. The most
+interesting was a **controller-as-fragment-holder** model: instead of all N
+fragments living on satellite nodes, the controller holds one fragment and
+each node holds one of the remaining N. With RS(K=2), this means *controller
++ any single surviving node* can reconstruct any file; a strong fit for the
+satellite-style cluster narrative.
+
+The tradeoff is statelessness. Storing fragments on the controller turns it
+from a stateless coordinator into critical infrastructure, raising storage
+overhead from ~200% to ~250% (for N=4) and tightening the controller's
+failure-domain coupling.
+
+The current implementation keeps RS(2, 4) with pure node-side fragment
+storage and a stateless controller. The fragment-holder mode is a candidate
+for an optional deployment flag which was useful for demo and recovery-maximised
+scenarios, not for production where coordinator failure should be cheap.
+
+See [`docs/resilience-design-notes.md`](docs/resilience-design-notes.md) for
+the full design discussion.
+
+---
+
 ## Status
 
 Working prototype. Demonstrable end-to-end via the live deployment.
