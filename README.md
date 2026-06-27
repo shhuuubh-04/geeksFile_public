@@ -28,7 +28,7 @@ the implementation private.
 
 ## Architecture
 
-\```
+```
 ┌───────────────────────┐
 │   Web UI (Preact SPA) │  ← Dashboard + Playground
 │   :9000 (static)      │
@@ -45,7 +45,7 @@ the implementation private.
 │ N1 │   │ N2 │   │ N3 │   │ N4 │   ← Storage Nodes (FastAPI)
 │8001│   │8002│   │8003│   │8004│      + dynamically added nodes
 └────┘   └────┘   └────┘   └────┘
-\```
+```
 
 Five independent layers — controller, storage nodes, placement, replication,
 and UI — each replaceable without touching the others. Storage nodes can be
@@ -55,25 +55,25 @@ added or removed at runtime; the controller spawns and kills real processes.
 
 ## Upload Pipeline
 
-\```
+```
 File bytes
   → LZ4 compress
   → Split into 256 KB chunks
   → SHA-256 CID per chunk
   → Reed-Solomon encode (K=2, N=adaptive)
-  → AES-256-GCM encrypt each fragment (unique nonce per fragment)
-  → CRUSH-Lite placement (N distinct nodes per group)
+  → AES-256-GCM encrypt each fragment
+  → CRUSH-Lite placement (node-diverse: N distinct nodes/group)
   → ThreadPoolExecutor parallel distribution
-  → SHA-256 Merkle tree over chunk CIDs
+  → SHA-256 Merkle tree
   → SQLite manifest persistence
-\```
+```
 
 ## Download Pipeline
 
-\```
+```
 File ID
   → Load manifest from SQLite
-  → Check fragment LRU cache (512 items)
+  → Check fragment LRU cache
   → asyncio.gather() parallel fetch (K fragments per group)
   → AES-256-GCM decrypt
   → Reed-Solomon decode
@@ -81,14 +81,14 @@ File ID
   → LZ4 decompress
   → Merkle tree verification
   → StreamingResponse (256 KB chunks)
-\```
+```
 
 ---
 
 ## What this demonstrates
 
 - **Distributed storage primitives end-to-end.** Erasure coding, replication,
-  fault-tolerant placement, cryptographic integrity — implemented, not
+  fault-tolerant placement, cryptographic integrity; implemented, not
   imported as a black box.
 - **A working control plane.** Dynamic membership (add/remove nodes at
   runtime via REST), health checks, per-node statistics, and event streaming.
@@ -117,10 +117,10 @@ File ID
 - Format: `nonce(12 B) || ciphertext || tag(16 B)`
 
 ### CRUSH-Lite Placement
-\```
+```
 score(fragment, node) = hash(fragment_key || node_id) × node_weight
 node_weight       = available_mb / (1 + latency_factor)
-\```
+```
 Group-level selection ensures all N fragments in a group are placed on N
 distinct nodes, so fault tolerance matches RS redundancy.
 
