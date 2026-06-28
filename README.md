@@ -40,7 +40,7 @@ session.
 
 ### Upload pipeline
 
-![Upload pipeline — 9 stages with per-stage timing](docs/images/upload-pipeline.png)
+![Upload pipeline — 9 stages with per-stage timing](images/upload-pipeline.png)
 
 *Nine stages, each with timing. SHA-256 integrity hash → LZ4 compression
 (11% reduction here) → 256 KB chunking → Reed-Solomon RS(2,4) encode →
@@ -50,7 +50,7 @@ This is what the Playground shows you when you upload a file.*
 
 ### Fault tolerance — recovery after node purge
 
-![Download with reconstruction after purging fragments from a node](docs/images/download-reconstruction.png)
+![Download with reconstruction after purging fragments from a node](images/download-reconstruction.png)
 
 *The headline claim of erasure coding, actually demonstrated. I purged
 fragments from `node_3`, then asked for the file back. The system fetched
@@ -61,7 +61,7 @@ went in.*
 
 ### Cluster topology
 
-![Live cluster dashboard with force-directed graph](docs/images/dashboard-cluster-topology.png)
+![Live cluster dashboard with force-directed graph](images/dashboard-cluster-topology.png)
 
 *Ground controller at the centre, satellite nodes around it. Live health,
 storage stats, erasure config. The graph updates as nodes come and go.*
